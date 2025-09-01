@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:divider="@android:color/darker_gray"
+    android:showDividers="end">
+
+    <TextView
+        android:id="@+id/txtBranchName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Branch Name"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtBranchAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Branch Address"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtBranchPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📞 0771234567"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="14sp" />
+
+</LinearLayout>
