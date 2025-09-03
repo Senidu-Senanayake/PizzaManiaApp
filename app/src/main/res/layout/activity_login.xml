@@ -3,31 +3,51 @@
     android:padding="24dp"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/pizza_background">
 
     <EditText
         android:id="@+id/edt_email"
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:textColorHint="@color/pizza_pepperoni_red"
+        android:textColor="@color/pizza_cheese_gold"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
 
     <EditText
         android:id="@+id/edt_password"
         android:hint="Password"
         android:inputType="textPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:textColorHint="@color/pizza_pepperoni_red"
+        android:textColor="@color/pizza_cheese_gold"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btn_login"
         android:text="Login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
 
     <Button
         android:id="@+id/btn_go_register"
         android:text="Go to Register"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:padding="12dp" />
 </LinearLayout>

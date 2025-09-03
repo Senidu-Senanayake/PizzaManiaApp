@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="pizza_red">#E53935</color> <!-- Tomato red -->
+    <color name="pizza_dough_light">#FFF5E1</color>
+    <color name="pizza_sauce_orange">#F4A261</color>
+    <color name="pizza_pepperoni_red">#FF4500</color>
+    <color name="pizza_cheese_gold">#DAA520</color>
+    <color name="pizza_herb_green">#2E8B57</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="pizza_red">#FF4500</color> <!-- Alias for pizza_pepperoni_red -->
 </resources>

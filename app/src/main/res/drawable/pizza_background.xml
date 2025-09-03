@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#FFF5E1" /><!-- Light cream for pizza dough -->
+            android:endColor="#F4A261" <!-- Warm orange for sauce -->
+            android:angle="90" />
+        </shape>
+    </item>
+</selector>
