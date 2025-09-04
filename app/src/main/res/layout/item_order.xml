@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:orientation="vertical"
     android:padding="12dp"
-    android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:background="@android:color/white"
+    android:layout_marginBottom="8dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/txt_order_id"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Order #1"
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/txt_order_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Order #123"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/txt_order_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2025-08-30 12:00" />
 
-        <TextView
-            android:id="@+id/txt_order_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2025-08-27"
-            android:textSize="14sp" />
+    <TextView
+        android:id="@+id/txt_order_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pending"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginTop="4dp"/>
 
-        <TextView
-            android:id="@+id/txt_order_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pending"
-            android:textColor="@color/pizza_red"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/txt_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment: Cash"
+        android:layout_marginTop="4dp"/>
 
-        <TextView
-            android:id="@+id/txt_order_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rs. 2800"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginTop="6dp"/>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/txt_order_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rs. 1200"
+        android:textStyle="bold"
+        android:layout_marginTop="6dp"/>
 
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

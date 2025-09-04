@@ -5,120 +5,133 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.pizzamania.R;
 import com.pizzamania.data.db.AppDbHelper;
-import com.pizzamania.data.model.MenuItem;
+import com.pizzamania.data.model.User;
 import com.pizzamania.data.repo.CartRepository;
-import com.pizzamania.data.repo.MenuRepository;
-import com.pizzamania.data.repo.OrderRepository;
+import com.pizzamania.data.repo.UserRepository;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    private TextView txtTotal;
+    private TextView txtUserInfo, txtCheckoutTotal, txtDeliveryFee, txtFinalTotal;
     private EditText edtAddress;
+    private RadioGroup radioGroupPayment;
     private MaterialButton btnPlaceOrder;
 
-    private int totalCents = 0; // store in cents for DB consistency
     private int userId;
-
+    private double subtotal = 0;
+    private static final int DELIVERY_FEE = 300; // Rs.300 fixed delivery fee
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        txtUserInfo = findViewById(R.id.txt_user_info);
+        txtCheckoutTotal = findViewById(R.id.txt_checkout_total);
+        txtDeliveryFee = findViewById(R.id.txt_delivery_fee);
+        txtFinalTotal = findViewById(R.id.txt_final_total);
+        edtAddress = findViewById(R.id.edt_address);
+        radioGroupPayment = findViewById(R.id.radio_group_payment);
+        btnPlaceOrder = findViewById(R.id.btn_place_order);
+
         userId = getSharedPreferences("PizzaManiaPrefs", MODE_PRIVATE)
                 .getInt("logged_in_user", -1);
 
-        txtTotal = findViewById(R.id.txt_checkout_total);
-        edtAddress = findViewById(R.id.edt_address);
-        btnPlaceOrder = findViewById(R.id.btn_place_order);
-
-        // Calculate and show total
-        totalCents = calculateTotalCents();
-        txtTotal.setText("Total: Rs. " + (totalCents / 100.0));
+        loadUserDetails();
+        calculateTotals();
 
         btnPlaceOrder.setOnClickListener(v -> placeOrder());
+    }
+
+    private void loadUserDetails() {
+        UserRepository userRepo = new UserRepository(this);
+        User user = userRepo.getUserById(userId);
+
+        if (user != null) {
+            txtUserInfo.setText("User: " + user.getFullName()
+                    + "\nPhone: " + user.getPhone()
+                    + "\nEmail: " + user.getEmail());
+
+            if (user.getAddress() != null && !user.getAddress().isEmpty()) {
+                edtAddress.setText(user.getAddress());
+            }
+        } else {
+            txtUserInfo.setText("Guest User");
+        }
+    }
+
+    private void calculateTotals() {
+        CartRepository cartRepo = new CartRepository(this);
+        Cursor c = cartRepo.getCartItems(userId);
+
+        subtotal = 0;
+        while (c.moveToNext()) {
+            int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
+            int unitPrice = c.getInt(c.getColumnIndexOrThrow("unit_price_cents"));
+            subtotal += (unitPrice / 100.0) * qty;
+        }
+        c.close();
+
+        double finalTotal = subtotal + DELIVERY_FEE;
+
+        txtCheckoutTotal.setText("Subtotal: Rs. " + subtotal);
+        txtDeliveryFee.setText("Delivery Fee: Rs. " + DELIVERY_FEE);
+        txtFinalTotal.setText("Final Total: Rs. " + finalTotal);
     }
 
     private void placeOrder() {
         String address = edtAddress.getText().toString().trim();
         if (address.isEmpty()) {
-            edtAddress.setError("Address required");
+            Toast.makeText(this, "Please enter delivery address", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        CartRepository cartRepo = new CartRepository(this);
-        MenuRepository menuRepo = new MenuRepository(this);
-        OrderRepository orderRepo = new OrderRepository(this);
+        int selectedId = radioGroupPayment.getCheckedRadioButtonId();
+        String paymentMethod = "Cash";
+        String status = "Pending";
 
-        // 1. Insert into Order table
-        long orderId = orderRepo.insertOrder(
-                userId,       // user_id (hardcoded for now)
-                1,       // branch_id (Colombo for now)
-                0,       // total will be updated later
-                address,
-                "Cash"   // payment method
-        );
-
-
-        // 2. Insert items & calculate total
-        Cursor c = cartRepo.getCartItems(userId);
-        int runningTotal = 0;
-
-        while (c.moveToNext()) {
-            int itemId = c.getInt(c.getColumnIndexOrThrow("item_id"));
-            int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
-
-            for (MenuItem m : menuRepo.getAllMenuItems()) {
-                if (m.getItemId() == itemId) {
-                    int unitPriceCents = m.getPriceCents();
-                    runningTotal += unitPriceCents * qty;
-
-                    orderRepo.insertOrderItem(orderId, itemId, qty, unitPriceCents);
-                }
-            }
+        if (selectedId == R.id.radio_card) {
+            paymentMethod = "Card";
+            status = "Paid";
+        } else if (selectedId == R.id.radio_wallet) {
+            paymentMethod = "Wallet";
+            status = "Paid";
         }
-        c.close();
 
-        // 3. Update order total
-        SQLiteDatabase db = new AppDbHelper(this).getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("total_cents", runningTotal);
-        db.update("`Order`", cv, "order_id=?", new String[]{String.valueOf(orderId)});
-        db.close();
+        double finalTotal = subtotal + DELIVERY_FEE;
 
-        // 4. Clear cart
-        cartRepo.clearCart(userId);
+        AppDbHelper dbHelper = new AppDbHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // 5. Success
-        android.widget.Toast.makeText(this, "Order placed! 🎉", android.widget.Toast.LENGTH_LONG).show();
-        finish();
-    }
+        ContentValues orderValues = new ContentValues();
+        orderValues.put("user_id", userId);
+        orderValues.put("branch_id", 1); // hardcoded for now
+        orderValues.put("status", status);
+        orderValues.put("created_at", System.currentTimeMillis());
+        orderValues.put("total_cents", (int) (finalTotal * 100));
+        orderValues.put("delivery_address", address);
+        orderValues.put("payment_method", paymentMethod);
 
-    private int calculateTotalCents() {
-        CartRepository cartRepo = new CartRepository(this);
-        MenuRepository menuRepo = new MenuRepository(this);
+        long orderId = db.insert("`Order`", null, orderValues);
 
-        Cursor c = cartRepo.getCartItems(userId);
-        int total = 0;
+        if (orderId != -1) {
+            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
 
-        while (c.moveToNext()) {
-            int itemId = c.getInt(c.getColumnIndexOrThrow("item_id"));
-            int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
+            CartRepository cartRepo = new CartRepository(this);
+            cartRepo.clearCart(userId);
 
-            for (MenuItem m : menuRepo.getAllMenuItems()) {
-                if (m.getItemId() == itemId) {
-                    total += m.getPriceCents() * qty;
-                }
-            }
+            finish();
+        } else {
+            Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();
         }
-        c.close();
-        return total;
     }
 }

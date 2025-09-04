@@ -15,66 +15,49 @@ public class OrderRepository {
     private final AppDbHelper dbHelper;
 
     public OrderRepository(Context context) {
-        this.dbHelper = new AppDbHelper(context);
+        dbHelper = new AppDbHelper(context);
     }
 
-    // Insert a new order, return order_id
     public long insertOrder(int userId, int branchId, int totalCents, String address, String paymentMethod) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("user_id", userId);
-        values.put("branch_id", branchId);
-        values.put("status", "Pending");
-        values.put("created_at", System.currentTimeMillis());
-        values.put("total_cents", totalCents);
-        values.put("delivery_address", address);
-        values.put("payment_method", paymentMethod);
-
-        return db.insert("`Order`", null, values);
+        ContentValues cv = new ContentValues();
+        cv.put("user_id", userId);
+        cv.put("branch_id", branchId);
+        cv.put("status", "Pending");
+        cv.put("created_at", System.currentTimeMillis());
+        cv.put("total_cents", totalCents);
+        cv.put("delivery_address", address);
+        cv.put("payment_method", paymentMethod);
+        return db.insert("`Order`", null, cv);
     }
 
-    // Insert items for an order
     public void insertOrderItem(long orderId, int itemId, int qty, int unitPriceCents) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("order_id", orderId);
-        values.put("item_id", itemId);
-        values.put("qty", qty);
-        values.put("unit_price_cents", unitPriceCents);
-
-        db.insert("OrderItem", null, values);
+        ContentValues cv = new ContentValues();
+        cv.put("order_id", orderId);
+        cv.put("item_id", itemId);
+        cv.put("qty", qty);
+        cv.put("unit_price_cents", unitPriceCents);
+        db.insert("OrderItem", null, cv);
     }
 
     public List<Order> getOrders(int userId) {
-        List<Order> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor c = db.query("`Order`",
-                new String[]{"order_id", "user_id", "branch_id", "status", "created_at", "total_cents"},
-                "user_id=?",
-                new String[]{String.valueOf(userId)},
+        Cursor c = db.query("`Order`", null, "user_id=?", new String[]{String.valueOf(userId)},
                 null, null, "created_at DESC");
 
+        List<Order> orders = new ArrayList<>();
         while (c.moveToNext()) {
             int id = c.getInt(c.getColumnIndexOrThrow("order_id"));
-            int uId = c.getInt(c.getColumnIndexOrThrow("user_id"));
             int branchId = c.getInt(c.getColumnIndexOrThrow("branch_id"));
             String status = c.getString(c.getColumnIndexOrThrow("status"));
             long createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"));
             int total = c.getInt(c.getColumnIndexOrThrow("total_cents"));
+            String paymentMethod = c.getString(c.getColumnIndexOrThrow("payment_method"));
 
-            list.add(new Order(id, uId, branchId, status, createdAt, total));
+            orders.add(new Order(id, userId, branchId, status, createdAt, total, paymentMethod));
         }
         c.close();
-        return list;
+        return orders;
     }
-
-    public void updateOrderStatus(long orderId, String newStatus) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("status", newStatus);
-        db.update("`Order`", cv, "order_id=?", new String[]{String.valueOf(orderId)});
-        db.close();
-    }
-
 }
