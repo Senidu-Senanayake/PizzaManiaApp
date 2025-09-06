@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:alpha="0.2" android:color="@color/pizza_red" /> <!-- 20% red -->
+    <item android:state_pressed="true" android:color="#33FF4500" /> <!-- 20% opacity red for pressed state -->
+    <item android:color="@color/pizza_red" /> <!-- Default state -->
 </selector>
