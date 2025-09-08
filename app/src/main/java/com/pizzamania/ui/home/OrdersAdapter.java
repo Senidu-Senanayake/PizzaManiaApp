@@ -1,5 +1,7 @@
 package com.pizzamania.ui.home;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,14 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.txtOrderStatus.setText(order.getStatus());
         holder.txtPayment.setText("Payment: " + order.getPaymentMethod());
         holder.txtOrderTotal.setText("Total: Rs. " + (order.getTotalCents() / 100.0));
+
+        // Click listener to open OrderDetailsActivity
+        holder.itemView.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, OrderDetailsActivity.class);
+            intent.putExtra("order_id", order.getOrderId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
