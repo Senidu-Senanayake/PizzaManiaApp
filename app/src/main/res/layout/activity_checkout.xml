@@ -1,89 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@drawable/pizza_background">
 
-    <!-- User Info -->
-    <TextView
-        android:id="@+id/txt_user_info"
+    <!-- Pizza Logo Header -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="User: -"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"/>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
 
-    <!-- Address -->
-    <EditText
-        android:id="@+id/edt_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Delivery Address" />
-
-    <!-- Cart Total -->
-    <TextView
-        android:id="@+id/txt_checkout_total"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total: Rs. 0"
-        android:textSize="16sp"
-        android:layout_marginTop="12dp"/>
-
-    <!-- Delivery Fee -->
-    <TextView
-        android:id="@+id/txt_delivery_fee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delivery Fee: Rs. 300"
-        android:textSize="16sp"
-        android:layout_marginTop="6dp"/>
-
-    <!-- Final Amount -->
-    <TextView
-        android:id="@+id/txt_final_total"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Final Total: Rs. 0"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
-
-    <!-- Payment Methods -->
-    <RadioGroup
-        android:id="@+id/radio_group_payment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-        <RadioButton
-            android:id="@+id/radio_cash"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cash on Delivery"
-            android:checked="true"/>
+            android:text="Checkout"
+            android:textColor="@color/pizza_pepperoni_red"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
 
-        <RadioButton
-            android:id="@+id/radio_card"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Card"/>
+            android:text="Complete your order"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/radio_wallet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wallet"/>
-    </RadioGroup>
-
-    <!-- Place Order Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_place_order"
+    <!-- Order Details Container -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Place Order"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_marginTop="20dp" />
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@drawable/rounded_corner_background"
+        android:elevation="8dp"
+        android:layout_marginBottom="24dp">
 
+        <!-- User Info -->
+        <TextView
+            android:id="@+id/txt_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User: -"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/pizza_pepperoni_red"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Address -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delivery Address"
+            android:textColor="@color/pizza_pepperoni_red"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/edt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your delivery address"
+            android:background="@drawable/edittext_pizza_background"
+            android:textColor="@color/pizza_cheese_gold"
+            android:textColorHint="@color/pizza_cheese_light"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="8dp" />
+
+        <!-- Cart Total -->
+        <TextView
+            android:id="@+id/txt_checkout_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: Rs. 0"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="12dp"/>
+
+        <!-- Delivery Fee -->
+        <TextView
+            android:id="@+id/txt_delivery_fee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delivery Fee: Rs. 300"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="6dp"/>
+
+        <!-- Final Amount -->
+        <TextView
+            android:id="@+id/txt_final_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Final Total: Rs. 0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/pizza_cheese_gold"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Payment Methods -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment Method"
+            android:textColor="@color/pizza_pepperoni_red"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/radio_group_payment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/radio_cash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cash"
+                android:textColor="@color/white"
+                android:buttonTint="@color/pizza_cheese_gold"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/radio_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Card"
+                android:textColor="@color/white"
+                android:buttonTint="@color/pizza_cheese_gold"/>
+
+            <RadioButton
+                android:id="@+id/radio_wallet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Wallet"
+                android:textColor="@color/white"
+                android:buttonTint="@color/pizza_cheese_gold"/>
+        </RadioGroup>
+
+        <!-- Place Order Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_place_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Order"
+            app:backgroundTint="@color/pizza_pepperoni_red"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingVertical="16dp"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
 </LinearLayout>
