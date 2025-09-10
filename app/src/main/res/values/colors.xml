@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Original Pizza Mania Colors -->
     <color name="pizza_dough_light">#FFF5E1</color>
     <color name="pizza_sauce_orange">#F4A261</color>
     <color name="pizza_pepperoni_red">#FF4500</color>
@@ -11,5 +12,15 @@
     <color name="pizza_cheese_light">#FFF5D6</color>
     <color name="pizza_sauce_red">#8B0000</color>
     <color name="pizza_dark_crust">#5C3A21</color>
+    <color name="error">#FF0000</color>
+    <color name="info">#2196F3</color>
+    <color name="unavailable_overlay">#80000000</color>
 
+
+    <!-- Enhanced UI Colors -->
+    <color name="primary">#FF4500</color>
+    <color name="primary_dark">#E63E00</color>
+    <color name="primary_light">#FF6B33</color>
+    <color name="secondary">#DAA520</color>
+    <color name="secondary_dark">#B8941B</color>
 </resources>
