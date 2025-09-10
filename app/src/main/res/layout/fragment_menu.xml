@@ -1,26 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/pizza_background">
 
-    <!-- Search bar (future use) -->
-    <EditText
-        android:id="@+id/search_bar"
-        android:hint="Search menu..."
-        android:drawableStart="@android:drawable/ic_menu_search"
+    <!-- App Bar Layout with Collapsing Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="8dp"/>
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-    <!-- RecyclerView for menu -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_menu"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@android:color/transparent">
+
+            <!-- Enhanced Header Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/pizza_cheese_gold"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:background="@drawable/header_gradient_background">
+
+                    <!-- Logo with shadow effect -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="8dp"
+                        app:cardBackgroundColor="@color/white">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Pizza Mania Logo"
+                            android:padding="12dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/pizza2" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Enhanced Typography -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Our Menu"
+                        android:textColor="@color/pizza_pepperoni_red"
+                        android:textSize="34sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.03"
+                        android:layout_marginTop="16dp"
+                        android:shadowColor="@color/black"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Handcrafted and Always Delicious"
+                        android:textColor="@color/pizza_cheese_gold"
+                        android:textSize="16sp"
+                        android:textStyle="italic"
+                        android:letterSpacing="0.01"
+                        android:layout_marginTop="8dp"
+                        android:alpha="0.9" />
+
+                    <!-- Decorative pizza slice divider -->
+                    <View
+                        android:layout_width="80dp"
+                        android:layout_height="4dp"
+                        android:background="@drawable/pizza_divider"
+                        android:layout_marginTop="12dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="80dp"/>
-</LinearLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="80dp">
+
+            <!-- Search and Filter Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Search Bar -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search your favorite pizza..."
+                        app:startIconDrawable="@drawable/ic_search"
+                        app:endIconMode="clear_text"
+                        app:boxBackgroundMode="none"
+                        app:hintTextColor="@color/pizza_cheese_gold"
+                        app:startIconTint="@color/pizza_pepperoni_red">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/search_menu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="18dp"
+                            android:textSize="16sp"
+                            android:textColor="@color/pizza_dark_crust"
+                            android:background="@android:color/transparent" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Category Chips -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chip_group_categories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_all"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🍕 All"
+                            android:checked="true"
+                            app:chipBackgroundColor="@color/pizza_pepperoni_red"
+                            android:textColor="@color/white"
+                            app:chipCornerRadius="20dp"
+                            app:chipStrokeWidth="0dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_pizza"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🍕 Pizza"
+                            app:chipBackgroundColor="@color/white"
+                            app:chipStrokeColor="@color/pizza_pepperoni_red"
+                            app:chipStrokeWidth="2dp"
+                            android:textColor="@color/pizza_pepperoni_red"
+                            app:chipCornerRadius="20dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_appetizers"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🥗 Appetizers"
+                            app:chipBackgroundColor="@color/white"
+                            app:chipStrokeColor="@color/pizza_pepperoni_red"
+                            app:chipStrokeWidth="2dp"
+                            android:textColor="@color/pizza_pepperoni_red"
+                            app:chipCornerRadius="20dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_drinks"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🥤 Drinks"
+                            app:chipBackgroundColor="@color/white"
+                            app:chipStrokeColor="@color/pizza_pepperoni_red"
+                            app:chipStrokeWidth="2dp"
+                            android:textColor="@color/pizza_pepperoni_red"
+                            app:chipCornerRadius="20dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_desserts"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🍰 Desserts"
+                            app:chipBackgroundColor="@color/white"
+                            app:chipStrokeColor="@color/pizza_pepperoni_red"
+                            app:chipStrokeWidth="2dp"
+                            android:textColor="@color/pizza_pepperoni_red"
+                            app:chipCornerRadius="20dp" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <!-- Menu Items RecyclerView -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Enhanced FAB with Badge -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="View Cart"
+            app:srcCompat="@drawable/ic_cart"
+            app:tint="@color/white"
+            app:backgroundTint="@color/pizza_pepperoni_red"
+            app:elevation="12dp"
+            app:borderWidth="0dp"
+            app:rippleColor="@color/pizza_cheese_light" />
+
+        <!-- Cart Badge -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cart_badge_container"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/pizza_cheese_gold"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/cart_badge_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
