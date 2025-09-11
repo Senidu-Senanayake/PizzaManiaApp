@@ -67,8 +67,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             txtOrderId = itemView.findViewById(R.id.txt_order_id);
             txtOrderDate = itemView.findViewById(R.id.txt_order_date);
             txtOrderStatus = itemView.findViewById(R.id.txt_order_status);
-            txtPayment = itemView.findViewById(R.id.txt_payment);
-            txtOrderTotal = itemView.findViewById(R.id.txt_order_total);
+            txtPayment = itemView.findViewById(R.id.txt_order_payment);
+            txtOrderTotal = itemView.findViewById(R.id.txt_order_totals);
         }
     }
 }
