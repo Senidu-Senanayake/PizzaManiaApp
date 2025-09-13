@@ -1,17 +1,23 @@
 package com.pizzamania.ui.menu;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,6 +26,8 @@ import com.google.android.material.card.MaterialCardView;
 import com.pizzamania.R;
 import com.pizzamania.data.model.MenuItem;
 import com.pizzamania.data.repo.MenuRepository;
+import com.pizzamania.data.repo.CartRepository;
+
 import java.util.List;
 
 public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickListener {
@@ -34,7 +42,6 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
 
     private MenuRepository menuRepository;
     private List<MenuItem> menuItems;
-    private int cartItemCount = 0;
 
     @Nullable
     @Override
@@ -51,8 +58,16 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
         setupRecyclerView();
         setupSearchFunctionality();
         setupCategoryFilters();
-        setupCartButton();
+        setupCartButtons();
         loadMenuItems();
+
+        updateCartBadge();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCartBadge();
     }
 
     private void initViews(View view) {
@@ -69,12 +84,12 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
     }
 
     private void setupRecyclerView() {
-        recyclerMenu.setLayoutManager(new LinearLayoutManager(getContext()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerMenu.setLayoutManager(gridLayoutManager);
         recyclerMenu.setHasFixedSize(true);
 
-        // Add item decoration for spacing
         int spacing = getResources().getDimensionPixelSize(R.dimen.menu_item_spacing);
-        recyclerMenu.addItemDecoration(new MenuItemDecoration(spacing));
+        recyclerMenu.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
     }
 
     private void setupSearchFunctionality() {
@@ -105,8 +120,6 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
                     if (selectedChip != null && menuAdapter != null) {
                         String category = extractCategoryFromChip(selectedChip.getText().toString());
                         menuAdapter.filterByCategory(category);
-
-                        // Add visual feedback
                         animateChipSelection(selectedChip);
                     }
                 }
@@ -115,7 +128,6 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
     }
 
     private String extractCategoryFromChip(String chipText) {
-        // Remove emoji and extract category name
         return chipText.replaceAll("[^A-Za-z\\s]", "").trim();
     }
 
@@ -135,13 +147,16 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
         }
     }
 
-    private void setupCartButton() {
+    private void setupCartButtons() {
         if (fabCart != null) {
             fabCart.setOnClickListener(v -> {
-                // Navigate to cart
-                // Navigation logic here
+                openCartPage();
                 animateCartClick();
             });
+        }
+
+        if (cartBadgeContainer != null) {
+            cartBadgeContainer.setOnClickListener(v -> openCartPage());
         }
     }
 
@@ -162,23 +177,16 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
     }
 
     private void loadMenuItems() {
-        // In a real app, this would be done with a ViewModel and LiveData
         new Thread(() -> {
             try {
                 menuItems = menuRepository.getAllMenuItems();
 
-                // Switch back to main thread for UI updates
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        setupAdapter();
-                    });
+                    getActivity().runOnUiThread(this::setupAdapter);
                 }
             } catch (Exception e) {
-                // Handle error case
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        showEmptyState();
-                    });
+                    getActivity().runOnUiThread(this::showEmptyState);
                 }
             }
         }).start();
@@ -190,79 +198,81 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
             menuAdapter.setOnItemClickListener(this);
             recyclerMenu.setAdapter(menuAdapter);
         } else {
-            // Show empty state or error message
             showEmptyState();
         }
     }
 
     private void showEmptyState() {
-        // Implement empty state UI
-        // You could show a message saying "No menu items available"
+        Toast.makeText(getContext(), "No menu items available", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onAddToCart(MenuItem item, int quantity) {
-        // Handle adding item to cart
-        if (item != null && quantity > 0) {
-            cartItemCount += quantity;
-            updateCartBadge();
-
-            // Show feedback to user
-            showAddToCartFeedback(item, quantity);
-        }
+        updateCartBadge();
     }
 
     @Override
     public void onItemClick(MenuItem item) {
-        // Handle item click - could show detailed view
-        // Navigate to item details or show dialog
-        if (item != null) {
-            // Implement item detail navigation or dialog
+        if (item != null && getContext() != null) {
+            Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
+            intent.putExtra("menu_item", item);
+            startActivity(intent);
         }
     }
 
+    //Count total quantity of items in cart and update badge
     private void updateCartBadge() {
         if (cartBadgeContainer != null && cartBadgeText != null) {
-            if (cartItemCount > 0) {
-                cartBadgeContainer.setVisibility(View.VISIBLE);
-                cartBadgeText.setText(String.valueOf(Math.min(cartItemCount, 99))); // Cap at 99
+            // Get logged in user
+            int userId = requireContext()
+                    .getSharedPreferences("PizzaManiaPrefs", Context.MODE_PRIVATE)
+                    .getInt("logged_in_user", -1);
 
-                // Animate badge appearance
-                cartBadgeContainer.animate()
-                        .scaleX(1.1f)
-                        .scaleY(1.1f)
-                        .setDuration(150)
-                        .withEndAction(() ->
-                                cartBadgeContainer.animate()
-                                        .scaleX(1f)
-                                        .scaleY(1f)
-                                        .setDuration(150)
-                                        .start())
-                        .start();
+            if (userId == -1) {
+                cartBadgeContainer.setVisibility(View.GONE);
+                return;
+            }
+
+            // Query cart repository
+            CartRepository cartRepo = new CartRepository(requireContext());
+            int productCount = cartRepo.getCartItemCount(userId);
+
+            if (productCount > 0) {
+                cartBadgeContainer.setVisibility(View.VISIBLE);
+
+                String displayCount = productCount > 99 ? "99+" : String.valueOf(productCount);
+                cartBadgeText.setText(displayCount);
+
+                Log.d("MenuFragment", "Cart badge updated: " + displayCount);
             } else {
                 cartBadgeContainer.setVisibility(View.GONE);
+                Log.d("MenuFragment", "Cart empty → hiding badge");
             }
         }
     }
 
-    private void showAddToCartFeedback(MenuItem item, int quantity) {
-        // You could show a Snackbar or Toast here
-        if (getView() != null && item != null) {
-            String message = quantity > 0 ?
-                    item.getName() + " added to cart" :
-                    item.getName() + " removed from cart";
 
-            // Show feedback (implement Snackbar or custom animation)
-            // Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+
+
+    private void openCartPage() {
+        if (getActivity() != null) {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new CartFragment())
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
-    // Custom ItemDecoration for RecyclerView spacing
-    private static class MenuItemDecoration extends RecyclerView.ItemDecoration {
+    private static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+        private final int spanCount;
         private final int spacing;
+        private final boolean includeEdge;
 
-        public MenuItemDecoration(int spacing) {
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
             this.spacing = spacing;
+            this.includeEdge = includeEdge;
         }
 
         @Override
@@ -270,11 +280,22 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnItemClickLis
                                    @NonNull View view,
                                    @NonNull RecyclerView parent,
                                    @NonNull RecyclerView.State state) {
-            outRect.bottom = spacing;
+            int position = parent.getChildAdapterPosition(view);
+            int column = position % spanCount;
 
-            // Add top margin for first item
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = spacing;
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount;
+                outRect.right = (column + 1) * spacing / spanCount;
+                if (position < spanCount) {
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing;
+            } else {
+                outRect.left = column * spacing / spanCount;
+                outRect.right = spacing - (column + 1) * spacing / spanCount;
+                if (position >= spanCount) {
+                    outRect.top = spacing;
+                }
             }
         }
     }

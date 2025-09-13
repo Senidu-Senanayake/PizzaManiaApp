@@ -33,6 +33,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        // Init views
         imgProduct = findViewById(R.id.img_product);
         txtName = findViewById(R.id.txt_name);
         txtDesc = findViewById(R.id.txt_desc);
@@ -47,9 +48,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
         cbOlives = findViewById(R.id.checkbox_olives);
         cbMushrooms = findViewById(R.id.checkbox_mushrooms);
 
+        // Get current user
         userId = getSharedPreferences("PizzaManiaPrefs", MODE_PRIVATE)
                 .getInt("logged_in_user", -1);
 
+        // Load menu item
         menuItem = (MenuItem) getIntent().getSerializableExtra("menu_item");
 
         if (menuItem != null) {
@@ -59,7 +62,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             Glide.with(this)
                     .load(menuItem.getImageUri())
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.ic_pizza_logo)
                     .into(imgProduct);
         }
 
@@ -76,7 +79,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Add to Cart
+        // Add to Cart button
         btnAddToCart.setOnClickListener(v -> {
             if (menuItem != null) {
                 int selectedId = sizeGroup.getCheckedRadioButtonId();
@@ -86,24 +89,23 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     size = selected.getText().toString();
                 }
 
-                int finalPrice = menuItem.getPriceCents();
+                // Base price in cents
+                int unitPrice = menuItem.getPriceCents();
 
-                // Adjust size price
+                // Adjust size
                 if (size.equalsIgnoreCase("Small")) {
-                    finalPrice = (int) (finalPrice * 0.8);
+                    unitPrice = (int) (unitPrice * 0.8);
                 } else if (size.equalsIgnoreCase("Large")) {
-                    finalPrice = (int) (finalPrice * 1.2);
+                    unitPrice = (int) (unitPrice * 1.2);
                 }
 
-                // Extra toppings
-                if (cbCheese.isChecked()) finalPrice += 200;
-                if (cbOlives.isChecked()) finalPrice += 150;
-                if (cbMushrooms.isChecked()) finalPrice += 180;
-
-                finalPrice = finalPrice * quantity;
+                // Toppings
+                if (cbCheese.isChecked()) unitPrice += 200;
+                if (cbOlives.isChecked()) unitPrice += 150;
+                if (cbMushrooms.isChecked()) unitPrice += 180;
 
                 CartRepository cartRepo = new CartRepository(this);
-                cartRepo.addToCart(userId, menuItem.getItemId(), quantity, finalPrice, size);
+                cartRepo.addToCart(userId, menuItem.getItemId(), quantity, unitPrice, size);
 
                 Toast.makeText(this,
                         menuItem.getName() + " (" + size + ", x" + quantity + ") added to cart!",

@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pizza_background">
+    android:background="@drawable/pizza_background"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- App Bar Layout with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -241,7 +243,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_menu"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:padding="16dp"
                     android:clipToPadding="false"
                     android:scrollbars="vertical" />
@@ -252,12 +254,15 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Enhanced FAB with Badge -->
-    <FrameLayout
+    <!--Enhanced FAB with Badge using ConstraintLayout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fab_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp">
+        android:layout_margin="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_cart"
@@ -267,20 +272,23 @@
             app:srcCompat="@drawable/ic_cart"
             app:tint="@color/white"
             app:backgroundTint="@color/pizza_pepperoni_red"
-            app:elevation="12dp"
-            app:borderWidth="0dp"
-            app:rippleColor="@color/pizza_cheese_light" />
+            android:elevation="6dp"
+            android:translationZ="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Cart Badge -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cart_badge_container"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@id/fab_cart"
+            app:layout_constraintEnd_toEndOf="@id/fab_cart"
+            android:layout_marginTop="-6dp"
+            android:layout_marginEnd="-6dp"
             app:cardCornerRadius="14dp"
-            app:cardElevation="4dp"
+            app:cardElevation="12dp"
+            android:elevation="24dp"
+            android:translationZ="24dp"
             app:cardBackgroundColor="@color/pizza_cheese_gold"
             android:visibility="gone">
 
@@ -288,14 +296,13 @@
                 android:id="@+id/cart_badge_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:text="0"
                 android:textColor="@color/white"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center" />
-
+                android:textStyle="bold"/>
         </com.google.android.material.card.MaterialCardView>
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
