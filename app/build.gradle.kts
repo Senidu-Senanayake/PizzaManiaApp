@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 // For image loading (optional but recommended)
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 
 }

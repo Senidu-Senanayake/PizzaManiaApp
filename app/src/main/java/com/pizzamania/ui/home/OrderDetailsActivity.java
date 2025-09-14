@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {
 
-    private TextView txtOrderId, txtDate, txtStatus, txtPayment, txtAddress, txtUser, txtEstimate, txtTotals;
+    private TextView txtOrderId, txtDate, txtStatus, txtPayment, txtAddress, txtUser, txtEstimate, txtTotals, txtTracking;
     private LinearLayout itemsContainer;
 
     private int orderId;
@@ -42,6 +42,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         txtUser = findViewById(R.id.txt_order_user);
         txtEstimate = findViewById(R.id.txt_order_estimate);
         txtTotals = findViewById(R.id.txt_order_totals);
+        txtTracking = findViewById(R.id.txt_tracking_status);
         itemsContainer = findViewById(R.id.items_container);
 
         orderId = getIntent().getIntExtra("order_id", -1);
@@ -62,12 +63,14 @@ public class OrderDetailsActivity extends AppCompatActivity {
             String payment = c.getString(c.getColumnIndexOrThrow("payment_method"));
             String address = c.getString(c.getColumnIndexOrThrow("delivery_address"));
             int totalCents = c.getInt(c.getColumnIndexOrThrow("total_cents"));
+            String tracking = c.getString(c.getColumnIndexOrThrow("tracking_status"));
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
             txtOrderId.setText("Order #" + orderId);
             txtDate.setText("Date: " + sdf.format(new Date(createdAt)));
             txtStatus.setText("Status: " + status);
+            txtTracking.setText("Tracking: " + (tracking != null ? tracking : "Placed"));
             txtPayment.setText("Payment: " + payment);
             txtAddress.setText("Ship To: " + address);
 
@@ -95,11 +98,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
         MenuRepository menuRepo = new MenuRepository(this);
 
         Cursor c = db.rawQuery("SELECT * FROM OrderItem WHERE order_id=?", new String[]{String.valueOf(orderId)});
+        if (c.getCount() == 0) {
+            // Debug log
+            android.util.Log.d("OrderDetails", "No items found for order " + orderId);
+        }
         while (c.moveToNext()) {
             int itemId = c.getInt(c.getColumnIndexOrThrow("item_id"));
             int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
-            int unitPrice = c.getInt(c.getColumnIndexOrThrow("unit_price_cents"));
 
+            // Find menu item
             MenuItem mi = null;
             for (MenuItem m : menuRepo.getAllMenuItems()) {
                 if (m.getItemId() == itemId) {
@@ -109,43 +116,18 @@ public class OrderDetailsActivity extends AppCompatActivity {
             }
 
             if (mi != null) {
-                // inflate item layout dynamically
-                LinearLayout itemLayout = new LinearLayout(this);
-                itemLayout.setOrientation(LinearLayout.HORIZONTAL);
-                itemLayout.setPadding(0, 12, 0, 12);
+                TextView itemText = new TextView(this);
+                itemText.setText(mi.getName() + " ×" + qty);
+                itemText.setTextSize(16f);
+                itemText.setTextColor(getResources().getColor(R.color.pizza_dough_light));
+                itemText.setPadding(0, 8, 0, 8);
 
-                ImageView img = new ImageView(this);
-                LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
-                img.setLayoutParams(imgParams);
-
-                Glide.with(this)
-                        .load(mi.getImageUri())
-                        .placeholder(R.drawable.ic_launcher_foreground)
-                        .into(img);
-
-                LinearLayout textLayout = new LinearLayout(this);
-                textLayout.setOrientation(LinearLayout.VERTICAL);
-                textLayout.setPadding(20, 0, 0, 0);
-
-                TextView name = new TextView(this);
-                name.setText(mi.getName() + " x" + qty);
-
-                TextView desc = new TextView(this);
-                desc.setText(mi.getDescription());
-
-                TextView price = new TextView(this);
-                price.setText("Rs. " + ((unitPrice / 100.0) * qty));
-
-                textLayout.addView(name);
-                textLayout.addView(desc);
-                textLayout.addView(price);
-
-                itemLayout.addView(img);
-                itemLayout.addView(textLayout);
-
-                itemsContainer.addView(itemLayout);
+                itemsContainer.addView(itemText);
             }
         }
         c.close();
     }
+
+
+
 }

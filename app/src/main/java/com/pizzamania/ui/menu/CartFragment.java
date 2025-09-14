@@ -66,7 +66,7 @@ public class CartFragment extends Fragment {
             int itemId = c.getInt(c.getColumnIndexOrThrow("item_id"));
             int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
 
-            // Find matching MenuItem (to get name & price)
+            // Find matching MenuItem
             MenuItem mi = null;
             for (MenuItem m : menuRepo.getAllMenuItems()) {
                 if (m.getItemId() == itemId) {
@@ -76,7 +76,7 @@ public class CartFragment extends Fragment {
             }
 
             if (mi != null) {
-                double price = (mi.getPriceCents() / 100.0) * qty;
+                double price = (mi.getPriceCents()) * qty;
                 total += price;
                 items.add(new CartAdapter.CartItemDisplay(mi.getName(), qty, price));
             }

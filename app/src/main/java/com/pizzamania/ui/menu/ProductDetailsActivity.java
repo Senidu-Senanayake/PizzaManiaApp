@@ -58,7 +58,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (menuItem != null) {
             txtName.setText(menuItem.getName());
             txtDesc.setText(menuItem.getDescription());
-            txtPrice.setText("Rs. " + (menuItem.getPriceCents() / 100.0));
+            txtPrice.setText("Rs. " + (menuItem.getPriceCents()));
 
             Glide.with(this)
                     .load(menuItem.getImageUri())

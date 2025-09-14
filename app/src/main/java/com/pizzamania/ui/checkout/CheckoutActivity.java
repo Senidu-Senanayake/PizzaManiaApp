@@ -77,7 +77,7 @@ public class CheckoutActivity extends AppCompatActivity {
         while (c.moveToNext()) {
             int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
             int unitPrice = c.getInt(c.getColumnIndexOrThrow("unit_price_cents"));
-            subtotal += (unitPrice / 100.0) * qty;
+            subtotal += (unitPrice) * qty;
         }
         c.close();
 
@@ -112,6 +112,7 @@ public class CheckoutActivity extends AppCompatActivity {
         AppDbHelper dbHelper = new AppDbHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        // Insert into Order table
         ContentValues orderValues = new ContentValues();
         orderValues.put("user_id", userId);
         orderValues.put("branch_id", 1); // hardcoded for now
@@ -124,11 +125,29 @@ public class CheckoutActivity extends AppCompatActivity {
         long orderId = db.insert("`Order`", null, orderValues);
 
         if (orderId != -1) {
-            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-
+            // Insert order items from cart into OrderItem
             CartRepository cartRepo = new CartRepository(this);
+            Cursor cartCursor = cartRepo.getCartItems(userId);
+
+            while (cartCursor.moveToNext()) {
+                int itemId = cartCursor.getInt(cartCursor.getColumnIndexOrThrow("item_id"));
+                int qty = cartCursor.getInt(cartCursor.getColumnIndexOrThrow("qty"));
+                int unitPrice = cartCursor.getInt(cartCursor.getColumnIndexOrThrow("unit_price_cents"));
+
+                ContentValues orderItemValues = new ContentValues();
+                orderItemValues.put("order_id", orderId);
+                orderItemValues.put("item_id", itemId);
+                orderItemValues.put("qty", qty);
+                orderItemValues.put("unit_price_cents", unitPrice);
+
+                db.insert("OrderItem", null, orderItemValues);
+            }
+            cartCursor.close();
+
+            // Clear the cart after placing order
             cartRepo.clearCart(userId);
 
+            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
             finish();
         } else {
             Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();

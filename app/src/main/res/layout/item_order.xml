@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:text="Order #1"
         android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:textColor="@color/pizza_cheese_gold" />
 
     <!-- Date -->
     <TextView
@@ -23,7 +24,8 @@
         android:layout_height="wrap_content"
         android:text="2025-08-30 12:00"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        android:textColor="@color/pizza_dough_light" />
 
     <!-- Status -->
     <TextView
@@ -32,7 +34,8 @@
         android:layout_height="wrap_content"
         android:text="Status: Pending"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        android:textColor="@color/pizza_dough_light" />
 
     <!-- Payment -->
     <TextView
@@ -41,7 +44,8 @@
         android:layout_height="wrap_content"
         android:text="Payment: Cash"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        android:textColor="@color/white" />
 
     <!-- Total -->
     <TextView
@@ -51,6 +55,7 @@
         android:text="Total: Rs. 1200"
         android:textStyle="bold"
         android:textSize="15sp"
-        android:layout_marginTop="6dp"/>
+        android:layout_marginTop="6dp"
+        android:textColor="@color/pizza_pepperoni_red" />
 
 </LinearLayout>

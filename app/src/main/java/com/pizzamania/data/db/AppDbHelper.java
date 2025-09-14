@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class AppDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "pizza_mania.db";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 3;
 
     public AppDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -49,7 +49,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "qty INTEGER NOT NULL DEFAULT 0," +
                 "PRIMARY KEY(branch_id,item_id))");
 
-        // User table (for login/register later)
+        // User table
         db.execSQL("CREATE TABLE User (" +
                 "user_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "full_name TEXT NOT NULL," +
@@ -60,7 +60,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "lat REAL," +
                 "lng REAL)");
 
-        // Order table
+        // Order table with tracking_status
         db.execSQL("CREATE TABLE `Order` (" +
                 "order_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "user_id INTEGER NOT NULL," +
@@ -71,7 +71,8 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "delivery_address TEXT," +
                 "delivery_lat REAL," +
                 "delivery_lng REAL," +
-                "payment_method TEXT)");
+                "payment_method TEXT," +
+                "tracking_status TEXT DEFAULT 'Placed')");
 
         // OrderItem table
         db.execSQL("CREATE TABLE OrderItem (" +
@@ -87,10 +88,11 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "user_id INTEGER NOT NULL," +
                 "item_id INTEGER NOT NULL," +
                 "qty INTEGER NOT NULL," +
-                "unit_price_cents INTEGER,"+
-                "size TEXT,"+
+                "unit_price_cents INTEGER," +
+                "size TEXT," +
                 "UNIQUE(user_id, item_id) ON CONFLICT REPLACE)");
 
+        // Seed some sample data
         seedInitialData(db);
     }
 
