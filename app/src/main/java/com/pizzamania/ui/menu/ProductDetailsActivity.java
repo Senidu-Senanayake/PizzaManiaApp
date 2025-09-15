@@ -70,42 +70,33 @@ public class ProductDetailsActivity extends AppCompatActivity {
         btnIncrease.setOnClickListener(v -> {
             quantity++;
             txtQuantity.setText(String.valueOf(quantity));
+            updatePriceDisplay();
         });
 
         btnDecrease.setOnClickListener(v -> {
             if (quantity > 1) {
                 quantity--;
                 txtQuantity.setText(String.valueOf(quantity));
+                updatePriceDisplay();
             }
         });
+
+        // Update price when topping selected
+        cbCheese.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
+        cbOlives.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
+        cbMushrooms.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
+        sizeGroup.setOnCheckedChangeListener((group, checkedId) -> updatePriceDisplay());
 
         // Add to Cart button
         btnAddToCart.setOnClickListener(v -> {
             if (menuItem != null) {
-                int selectedId = sizeGroup.getCheckedRadioButtonId();
-                String size = "Medium"; // default
-                if (selectedId != -1) {
-                    RadioButton selected = findViewById(selectedId);
-                    size = selected.getText().toString();
-                }
+                int unitPrice = calculateUnitPrice();
+                int finalPrice = unitPrice * quantity;
 
-                // Base price in cents
-                int unitPrice = menuItem.getPriceCents();
-
-                // Adjust size
-                if (size.equalsIgnoreCase("Small")) {
-                    unitPrice = (int) (unitPrice * 0.8);
-                } else if (size.equalsIgnoreCase("Large")) {
-                    unitPrice = (int) (unitPrice * 1.2);
-                }
-
-                // Toppings
-                if (cbCheese.isChecked()) unitPrice += 200;
-                if (cbOlives.isChecked()) unitPrice += 150;
-                if (cbMushrooms.isChecked()) unitPrice += 180;
+                String size = getSelectedSize();
 
                 CartRepository cartRepo = new CartRepository(this);
-                cartRepo.addToCart(userId, menuItem.getItemId(), quantity, unitPrice, size);
+                cartRepo.addToCart(userId, menuItem.getItemId(), quantity, finalPrice, size);
 
                 Toast.makeText(this,
                         menuItem.getName() + " (" + size + ", x" + quantity + ") added to cart!",
@@ -114,5 +105,40 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    //Get selected size
+    private String getSelectedSize() {
+        int selectedId = sizeGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            RadioButton selected = findViewById(selectedId);
+            return selected.getText().toString();
+        }
+        return "Medium";
+    }
+
+    //Calculate unit price with size + toppings
+    private int calculateUnitPrice() {
+        int unitPrice = menuItem.getPriceCents();
+
+        String size = getSelectedSize();
+        if (size.equalsIgnoreCase("Small")) {
+            unitPrice = (int) (unitPrice * 0.8);
+        } else if (size.equalsIgnoreCase("Large")) {
+            unitPrice = (int) (unitPrice * 1.2);
+        }
+
+        if (cbCheese.isChecked()) unitPrice += 200;
+        if (cbOlives.isChecked()) unitPrice += 150;
+        if (cbMushrooms.isChecked()) unitPrice += 180;
+
+        return unitPrice;
+    }
+
+    // Update UI price
+    private void updatePriceDisplay() {
+        int unitPrice = calculateUnitPrice();
+        int finalPrice = unitPrice * quantity;
+        txtPrice.setText("Rs. " + (finalPrice));
     }
 }

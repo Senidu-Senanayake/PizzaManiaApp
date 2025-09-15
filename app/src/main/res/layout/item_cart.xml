@@ -1,56 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/pizza_background"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_corner_background"
+    android:layout_marginBottom="8dp">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:layout_width="match_parent"
+    <!-- Product Name -->
+    <TextView
+        android:id="@+id/txt_cart_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner_background"
-        android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="4dp"
-        android:gravity="center_vertical">
+        android:layout_weight="1"
+        android:text="Pizza Name"
+        android:textSize="16sp"
+        android:textColor="@color/pizza_cheese_gold" />
 
-        <TextView
-            android:id="@+id/txt_cart_name"
-            android:text="Pizza Name"
-            android:textSize="16sp"
-            android:textColor="@color/pizza_cheese_gold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textStyle="normal"/>
+    <!-- Quantity -->
+    <TextView
+        android:id="@+id/txt_cart_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x1"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:layout_marginEnd="12dp" />
 
-        <TextView
-            android:id="@+id/txt_cart_qty"
-            android:text="x1"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:layout_marginEnd="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edittext_pizza_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"/>
+    <!-- Price -->
+    <TextView
+        android:id="@+id/txt_cart_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rs. 0.00"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/pizza_cheese_light"
+        android:layout_marginEnd="12dp" />
 
-        <TextView
-            android:id="@+id/txt_cart_price"
-            android:text="Rs. 0.00"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/pizza_cheese_light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_pizza_background"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="6dp"/>
-    </LinearLayout>
+    <!-- Remove Button -->
+    <ImageView
+        android:id="@+id/btn_remove"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_delete"
+        android:contentDescription="Remove item"
+        app:tint="@color/pizza_pepperoni_red" />
 </LinearLayout>

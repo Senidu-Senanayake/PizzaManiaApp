@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_menu) {
                 selected = new MenuFragment();
             }
-//            else if (id == R.id.nav_cart) {
-//                selected = new CartFragment();}
+            else if (id == R.id.nav_cart) {
+                selected = new CartFragment();}
 
             else if (id == R.id.nav_orders) {
                 selected = new OrdersFragment();

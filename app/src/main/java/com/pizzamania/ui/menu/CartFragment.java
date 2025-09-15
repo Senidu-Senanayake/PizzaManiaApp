@@ -65,33 +65,36 @@ public class CartFragment extends Fragment {
         while (c.moveToNext()) {
             int itemId = c.getInt(c.getColumnIndexOrThrow("item_id"));
             int qty = c.getInt(c.getColumnIndexOrThrow("qty"));
+            int unitPriceCents = c.getInt(c.getColumnIndexOrThrow("unit_price_cents"));
 
-            // Find matching MenuItem
-            MenuItem mi = null;
+            // Find product name
+            String name = "Unknown Item";
             for (MenuItem m : menuRepo.getAllMenuItems()) {
                 if (m.getItemId() == itemId) {
-                    mi = m;
+                    name = m.getName();
                     break;
                 }
             }
 
-            if (mi != null) {
-                double price = (mi.getPriceCents()) * qty;
-                total += price;
-                items.add(new CartAdapter.CartItemDisplay(mi.getName(), qty, price));
-            }
+            // Calculate line total
+            double price = unitPriceCents * qty;
+            total += price;
+
+            items.add(new CartAdapter.CartItemDisplay(itemId, name, qty, price));
         }
         c.close();
 
-        CartAdapter adapter = new CartAdapter(requireContext(), items);
+        CartAdapter adapter = new CartAdapter(requireContext(), items, newTotal -> {
+            txtTotal.setText("Total: Rs. " + String.format("%.2f", newTotal));
+        });
         recyclerView.setAdapter(adapter);
 
-        txtTotal.setText("Total: Rs. " + total);
+
+        txtTotal.setText("Total: Rs. " + String.format("%.2f", total));
 
         btnCheckout.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), com.pizzamania.ui.checkout.CheckoutActivity.class);
             startActivity(intent);
         });
     }
-
 }

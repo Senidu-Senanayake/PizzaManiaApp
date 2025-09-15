@@ -58,6 +58,11 @@ public class CartRepository {
         return db.query("CartItem", null, "user_id=?",
                 new String[]{String.valueOf(userId)}, null, null, null);
     }
+    public void removeFromCart(int userId, int itemId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("CartItem", "user_id=? AND item_id=?", new String[]{String.valueOf(userId), String.valueOf(itemId)});
+    }
+
 
     // Clear cart for a user
     public void clearCart(int userId) {
@@ -76,7 +81,7 @@ public class CartRepository {
 
         int count = 0;
         if (cursor.moveToFirst()) {
-            count = cursor.getInt(0); // sum of qty
+            count = cursor.getInt(0);
         }
 
         cursor.close();
