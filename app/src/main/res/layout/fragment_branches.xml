@@ -157,19 +157,19 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Location FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="Find nearest branch"
-        app:srcCompat="@drawable/ic_location"
-        app:tint="@color/white"
-        app:backgroundTint="@color/pizza_pepperoni_red"
-        app:elevation="12dp"
-        app:borderWidth="0dp"
-        app:rippleColor="@color/pizza_cheese_light" />
+<!--    &lt;!&ndash; Location FAB &ndash;&gt;-->
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab_location"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="Find nearest branch"-->
+<!--        app:srcCompat="@drawable/ic_location"-->
+<!--        app:tint="@color/white"-->
+<!--        app:backgroundTint="@color/pizza_pepperoni_red"-->
+<!--        app:elevation="12dp"-->
+<!--        app:borderWidth="0dp"-->
+<!--        app:rippleColor="@color/pizza_cheese_light" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

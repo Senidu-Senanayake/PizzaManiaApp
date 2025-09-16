@@ -58,12 +58,27 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (menuItem != null) {
             txtName.setText(menuItem.getName());
             txtDesc.setText(menuItem.getDescription());
-            txtPrice.setText("Rs. " + (menuItem.getPriceCents()));
 
-            Glide.with(this)
-                    .load(menuItem.getImageUri())
-                    .placeholder(R.drawable.ic_pizza_logo)
-                    .into(imgProduct);
+            // Price shown initially
+            txtPrice.setText("Rs. " + menuItem.getPriceCents());
+
+            // ✅ Load image
+            if (menuItem.getImageUri() != null && !menuItem.getImageUri().isEmpty()) {
+                int resId = getResources().getIdentifier(
+                        menuItem.getImageUri(), "drawable", getPackageName()
+                );
+
+                if (resId != 0) {
+                    imgProduct.setImageResource(resId);
+                } else {
+                    Glide.with(this)
+                            .load(menuItem.getImageUri()) // fallback URL
+                            .placeholder(R.drawable.ic_pizza_logo)
+                            .into(imgProduct);
+                }
+            } else {
+                imgProduct.setImageResource(R.drawable.ic_pizza_logo);
+            }
         }
 
         // Quantity buttons
@@ -81,7 +96,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Update price when topping selected
+        // Update price when toppings or size changes
         cbCheese.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
         cbOlives.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
         cbMushrooms.setOnCheckedChangeListener((buttonView, isChecked) -> updatePriceDisplay());
@@ -107,7 +122,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
     }
 
-    //Get selected size
+    // Get selected size
     private String getSelectedSize() {
         int selectedId = sizeGroup.getCheckedRadioButtonId();
         if (selectedId != -1) {
@@ -117,7 +132,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         return "Medium";
     }
 
-    //Calculate unit price with size + toppings
+    // Calculate unit price with size + toppings
     private int calculateUnitPrice() {
         int unitPrice = menuItem.getPriceCents();
 
@@ -139,6 +154,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void updatePriceDisplay() {
         int unitPrice = calculateUnitPrice();
         int finalPrice = unitPrice * quantity;
-        txtPrice.setText("Rs. " + (finalPrice));
+        txtPrice.setText("Rs. " + finalPrice);
     }
 }

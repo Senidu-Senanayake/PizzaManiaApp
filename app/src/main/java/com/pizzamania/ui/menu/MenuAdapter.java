@@ -107,7 +107,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         private final TextView nameText;
         private final TextView descriptionText;
         private final TextView priceText;
-//        private final TextView ratingText;
         private final ImageView itemImage;
         private final Button addToCartButton;
 
@@ -117,17 +116,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             nameText = itemView.findViewById(R.id.txt_name);
             descriptionText = itemView.findViewById(R.id.txt_desc);
             priceText = itemView.findViewById(R.id.txt_price);
-//            ratingText = itemView.findViewById(R.id.txt_rating);
             itemImage = itemView.findViewById(R.id.img_item);
             addToCartButton = itemView.findViewById(R.id.btn_add);
 
+            // Add to cart button → go to ProductDetails
             if (addToCartButton != null) {
                 addToCartButton.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION &&
                             position < filteredItems.size()) {
                         MenuItem item = filteredItems.get(position);
-
                         Intent intent = new Intent(context, ProductDetailsActivity.class);
                         intent.putExtra("menu_item", item);
                         context.startActivity(intent);
@@ -135,12 +133,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
                 });
             }
 
+            // Whole card clickable → go to ProductDetails
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION &&
                         position < filteredItems.size()) {
                     MenuItem item = filteredItems.get(position);
-
                     Intent intent = new Intent(context, ProductDetailsActivity.class);
                     intent.putExtra("menu_item", item);
                     context.startActivity(intent);
@@ -155,23 +153,28 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             nameText.setText(item.getName() != null ? item.getName() : "Unknown Item");
             descriptionText.setText(item.getDescription() != null ? item.getDescription() : "No description available");
 
-            //Price
+            // Price (divide cents → rupees)
             double price = item.getPriceCents();
             priceText.setText(String.format(Locale.ROOT, "Rs. %.2f", price));
 
-//            // Rating (default since MenuItem has none)
-//            ratingText.setText("0.0 ⭐");
-
             // Image
-            if (item.getImageUri() != null) {
-                Glide.with(context)
-                        .load(item.getImageUri())
-                        .placeholder(R.drawable.ic_pizza_logo)
-                        .into(itemImage);
+            if (item.getImageUri() != null && !item.getImageUri().isEmpty()) {
+                int resId = context.getResources().getIdentifier(
+                        item.getImageUri(), "drawable", context.getPackageName()
+                );
+                if (resId != 0) {
+                    itemImage.setImageResource(resId);
+                } else {
+                    Glide.with(context)
+                            .load(item.getImageUri()) // fallback if URL
+                            .placeholder(R.drawable.ic_pizza_logo)
+                            .into(itemImage);
+                }
             } else {
                 itemImage.setImageResource(R.drawable.ic_pizza_logo);
             }
 
+            // Availability
             boolean isAvailable = true;
             try {
                 isAvailable = item.isAvailable();

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class AppDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "pizza_mania.db";
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 5;
 
     public AppDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -128,10 +128,13 @@ public class AppDbHelper extends SQLiteOpenHelper {
 
         // Insert sample menu items
         ContentValues m = new ContentValues();
+
+        // Pizza
         m.put("name", "Classic Margherita");
         m.put("description", "Fresh tomatoes, mozzarella, basil");
         m.put("price_cents", 2800);
         m.put("category", "Pizza");
+        m.put("image_uri", "pizza_margherita"); // ✅ image in drawable
         db.insert("MenuItem", null, m);
 
         m.clear();
@@ -139,6 +142,66 @@ public class AppDbHelper extends SQLiteOpenHelper {
         m.put("description", "Sri Lankan style, extra heat");
         m.put("price_cents", 3500);
         m.put("category", "Pizza");
+        m.put("image_uri", "pizza_chicken");
+        db.insert("MenuItem", null, m);
+
+        m.clear();
+        m.put("name", "BBQ Chicken Pizza");
+        m.put("description", "Tangy BBQ sauce, chicken, onions");
+        m.put("price_cents", 4000);
+        m.put("category", "Pizza");
+        m.put("image_uri", "pizza_bbq");
+        db.insert("MenuItem", null, m);
+
+        // Appetizers
+        m.clear();
+        m.put("name", "Garlic Bread");
+        m.put("description", "Toasted bread with garlic butter");
+        m.put("price_cents", 800);
+        m.put("category", "Appetizers");
+        m.put("image_uri", "appetizer_garlic_bread");
+        db.insert("MenuItem", null, m);
+
+        m.clear();
+        m.put("name", "Cheesy Nachos");
+        m.put("description", "Crispy nachos with melted cheese");
+        m.put("price_cents", 1200);
+        m.put("category", "Appetizers");
+        m.put("image_uri", "appetizer_nachos");
+        db.insert("MenuItem", null, m);
+
+        // Drinks
+        m.clear();
+        m.put("name", "Coca Cola");
+        m.put("description", "Chilled 500ml bottle");
+        m.put("price_cents", 500);
+        m.put("category", "Drinks");
+        m.put("image_uri", "drink_coke");
+        db.insert("MenuItem", null, m);
+
+        m.clear();
+        m.put("name", "Fresh Orange Juice");
+        m.put("description", "Freshly squeezed orange juice");
+        m.put("price_cents", 1000);
+        m.put("category", "Drinks");
+        m.put("image_uri", "drink_orange");
+        db.insert("MenuItem", null, m);
+
+        // Desserts
+        m.clear();
+        m.put("name", "Chocolate Lava Cake");
+        m.put("description", "Warm cake with molten chocolate center");
+        m.put("price_cents", 1500);
+        m.put("category", "Desserts");
+        m.put("image_uri", "dessert_lava_cake");
+        db.insert("MenuItem", null, m);
+
+        m.clear();
+        m.put("name", "Ice Cream Sundae");
+        m.put("description", "Vanilla ice cream with chocolate syrup");
+        m.put("price_cents", 900);
+        m.put("category", "Desserts");
+        m.put("image_uri", "dessert_icecream");
         db.insert("MenuItem", null, m);
     }
 }
